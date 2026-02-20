@@ -10,7 +10,7 @@ spec:
   appEnergyLimit: "20"
   appFailureTolerance: ""
   performanceProfile: Greenness
-  appName: codecoappinstance3-swmapp
+  #appName: codecoappinstance3-swmapp
   codecoapp-msspec:
   - podspec:
       schedulerName:  {{ .schedulerName }}
@@ -36,7 +36,7 @@ spec:
         maxDelay: "10s"
         sendInterval: "10"
       otherService:
-        appName: acm-swm-app
+        appName: perfapp-pg-test-{{.Replica}}-{{.Iteration}}
         serviceName: perfapp-test-{{.Replica}}-{{.Iteration}}
         port: 8080
   - podspec:
@@ -76,7 +76,7 @@ spec:
         maxDelay: "10s"
         sendInterval: "10"
       otherService:
-        appName: acm-swm-app
+        appName: perfapp-pg-test-{{.Replica}}-{{.Iteration}}
         serviceName: postgres-test-{{.Replica}}-{{.Iteration}}
         port: 5432
   complianceClass: High
