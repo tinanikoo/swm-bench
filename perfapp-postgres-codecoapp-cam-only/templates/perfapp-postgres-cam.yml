@@ -1,7 +1,6 @@
 apiVersion: codeco.he-codeco.eu/v1alpha1
 kind: CodecoApp
 metadata:
-  generation: 1
   name: perfapp-pg-{{.Replica}}-{{.Iteration}}
   namespace:  {{ .namespace }}
 spec:
@@ -60,7 +59,7 @@ spec:
         - name: POSTGRESQL_DATABASE
           value: kubelet-density
         - name: POSTGRESQL_HOSTNAME
-          value: svc-db-channel
+          value: svc-db-channel-{{.Replica}}-{{.Iteration}}
         - name: POSTGRESQL_PORT-{{.Replica}}-{{.Iteration}}
           value: "5432"
         - name: POSTGRESQL_RETRY_INTERVAL
