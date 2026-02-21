@@ -1,5 +1,5 @@
 #!/bin/bash
-# TINA SAMIZADEH 21 FEB 
+# TINA SAMIZADEH 21 FEB  
 
 set -euo pipefail
 
