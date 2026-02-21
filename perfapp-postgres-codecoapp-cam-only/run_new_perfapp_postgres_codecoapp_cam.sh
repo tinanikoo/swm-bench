@@ -91,14 +91,25 @@ capture_creation_status() {
 }
 
 wait_for_creation_readiness() {
-  local replicas="$1"
-  local job_iters="$2"
+  local experiment_desc="$1"
+  local run_id="$2"
+  local run_log_file="$3"
+  local replicas="$4"
+  local job_iters="$5"
+  local creation_anchor_ts="${6:-}"
   local ns="${BASE_NS}"
   local components_per_instance=2
-  local expected_pods observed_pods ready_pods now elapsed started_at codecoapps plans
+  local expected_pods expected_containers observed_pods ready_pods observed_containers ready_containers
+  local now elapsed started_at codecoapps plans since_anchor
+  local observed_ready_seconds="" pod_ready_seconds="" container_ready_seconds=""
+  local timing_line timing_msg ts metric_line
 
   expected_pods=$((replicas * components_per_instance * job_iters))
+  expected_containers="${expected_pods}"
   started_at=$(date +%s)
+  if [[ -z "${creation_anchor_ts}" ]]; then
+    creation_anchor_ts="${started_at}"
+  fi
 
   while true; do
     observed_pods=$(kubectl get pods -n "${ns}" --no-headers 2>/dev/null | wc -l || echo 0)
@@ -109,8 +120,27 @@ wait_for_creation_readiness() {
       }
       END {print c + 0}
     ' || echo 0)
+    observed_containers=$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.status.containerStatuses[*].name}{"\n"}{end}' 2>/dev/null | awk '{c += NF} END {print c + 0}' || echo 0)
+    ready_containers=$(kubectl get pods -n "${ns}" -o jsonpath='{range .items[*]}{.status.containerStatuses[*].ready}{"\n"}{end}' 2>/dev/null | awk '
+      {
+        for (i = 1; i <= NF; i++) if ($i == "true") c++
+      }
+      END {print c + 0}
+    ' || echo 0)
     codecoapps=$(kubectl get codecoapp -n "${ns}" --no-headers 2>/dev/null | wc -l || echo 0)
     plans=$(kubectl get assignmentplan -n "${ns}" -o jsonpath='{range .items[*]}{.metadata.name}:{.status.phase}{" "}{end}' 2>/dev/null || echo "no-assignmentplan")
+    now=$(date +%s)
+    since_anchor=$((now - creation_anchor_ts))
+
+    if [[ -z "${observed_ready_seconds}" && "${observed_pods}" -ge "${expected_pods}" ]]; then
+      observed_ready_seconds="${since_anchor}"
+    fi
+    if [[ -z "${pod_ready_seconds}" && "${ready_pods}" -ge "${expected_pods}" ]]; then
+      pod_ready_seconds="${since_anchor}"
+    fi
+    if [[ -z "${container_ready_seconds}" && "${ready_containers}" -ge "${expected_containers}" ]]; then
+      container_ready_seconds="${since_anchor}"
+    fi
 
     local current_count criterion
     if [[ "${WAIT_COUNTER_MODE}" == "ready" ]]; then
@@ -122,13 +152,42 @@ wait_for_creation_readiness() {
     fi
 
     if [[ "${current_count}" -ge "${expected_pods}" ]]; then
+      timing_line="CreateReadinessSeconds run=${run_id} ${experiment_desc} observedReady=${observed_ready_seconds:-na}s podReady=${pod_ready_seconds:-na}s containerReady=${container_ready_seconds:-na}s expectedPods=${expected_pods} observedPods=${observed_pods} readyPods=${ready_pods} expectedContainers=${expected_containers} readyContainers=${ready_containers} status=ok"
+      echo "${timing_line}" | tee -a "${SUMMARY_FILE}"
+      timing_msg="${BASE_NS}: CreateReadiness observedReady: ${observed_ready_seconds:-na}s podReady: ${pod_ready_seconds:-na}s containerReady: ${container_ready_seconds:-na}s expectedPods: ${expected_pods} observedPods: ${observed_pods} readyPods: ${ready_pods} expectedContainers: ${expected_containers} readyContainers: ${ready_containers} status: ok"
+      if [[ -n "${run_log_file}" && -f "${run_log_file}" ]]; then
+        ts=$(date +"%Y-%m-%d %H:%M:%S")
+        metric_line="time=\"${ts}\" level=info msg=\"${timing_msg}\" file=\"run_new_perfapp_postgres_codecoapp_cam.sh:wait_for_creation_readiness\""
+        if grep -q 'Finished execution with UUID:' "${run_log_file}"; then
+          awk -v ins="${metric_line}" '
+            /Finished execution with UUID:/ && !done { print ins; done=1 }
+            { print }
+          ' "${run_log_file}" > "${run_log_file}.tmp" && mv "${run_log_file}.tmp" "${run_log_file}"
+        else
+          echo "${metric_line}" >> "${run_log_file}"
+        fi
+      fi
       echo "create-progress criterion=${criterion} value=${current_count}/${expected_pods} readyPods=${ready_pods}/${expected_pods} observedPods=${observed_pods}/${expected_pods} codecoapps=${codecoapps} assignmentplan='${plans}'"
       return 0
     fi
 
-    now=$(date +%s)
     elapsed=$((now - started_at))
     if [[ "${elapsed}" -ge "${WAIT_CREATE_TIMEOUT}" ]]; then
+      timing_line="CreateReadinessSeconds run=${run_id} ${experiment_desc} observedReady=${observed_ready_seconds:-na}s podReady=${pod_ready_seconds:-na}s containerReady=${container_ready_seconds:-na}s expectedPods=${expected_pods} observedPods=${observed_pods} readyPods=${ready_pods} expectedContainers=${expected_containers} readyContainers=${ready_containers} status=timeout"
+      echo "${timing_line}" | tee -a "${SUMMARY_FILE}"
+      timing_msg="${BASE_NS}: CreateReadiness observedReady: ${observed_ready_seconds:-na}s podReady: ${pod_ready_seconds:-na}s containerReady: ${container_ready_seconds:-na}s expectedPods: ${expected_pods} observedPods: ${observed_pods} readyPods: ${ready_pods} expectedContainers: ${expected_containers} readyContainers: ${ready_containers} status: timeout"
+      if [[ -n "${run_log_file}" && -f "${run_log_file}" ]]; then
+        ts=$(date +"%Y-%m-%d %H:%M:%S")
+        metric_line="time=\"${ts}\" level=info msg=\"${timing_msg}\" file=\"run_new_perfapp_postgres_codecoapp_cam.sh:wait_for_creation_readiness\""
+        if grep -q 'Finished execution with UUID:' "${run_log_file}"; then
+          awk -v ins="${metric_line}" '
+            /Finished execution with UUID:/ && !done { print ins; done=1 }
+            { print }
+          ' "${run_log_file}" > "${run_log_file}.tmp" && mv "${run_log_file}.tmp" "${run_log_file}"
+        else
+          echo "${metric_line}" >> "${run_log_file}"
+        fi
+      fi
       echo "create-timeout criterion=${criterion} value=${current_count}/${expected_pods} readyPods=${ready_pods}/${expected_pods} observedPods=${observed_pods}/${expected_pods} codecoapps=${codecoapps} assignmentplan='${plans}' waited=${elapsed}s" >&2
       {
         echo "---- create-timeout snapshot ----"
@@ -166,7 +225,7 @@ extract_podlatency_block() {
         if (line ~ /Deleting [0-9]+ namespaces with label: kubernetes.io\/metadata.name=kube-burner-service-latency/) { print; next }
         if (line ~ /Finished execution with UUID:/) { print; next }
         if (line ~ /👋 Exiting kube-burner/) { print; next }
-        if (line ~ /file="run_new_perfapp_postgres_codecoapp_cam.sh:(capture_creation_status|measure_delete_time)"/) { print; next }
+        if (line ~ /file="run_new_perfapp_postgres_codecoapp_cam.sh:(capture_creation_status|measure_delete_time|wait_for_creation_readiness)"/) { print; next }
 
         # Keep latency quantiles from the full log; these can appear before "Stopping measurement"
         if (line ~ /level=info/ && (line ~ /(50th:|99th:|max:|avg:)/ || low ~ /containerready/)) { print; next }
@@ -303,6 +362,7 @@ for (( run=1; run<=iterations; run++ )); do
       sed -i -E "s|^([[:space:]]*maxWaitTimeout:).*|\\1 ${MAX_WAIT_TIMEOUT}|" kubelet-density-heavy.codecoapp-only.yml
     fi
 
+    creation_started_at=$(date +%s)
     if command -v timeout >/dev/null 2>&1; then
       timeout "${KUBEBURNER_TIMEOUT}" kube-burner init -c kubelet-density-heavy.codecoapp-only.yml || true
     else
@@ -318,7 +378,7 @@ for (( run=1; run<=iterations; run++ )); do
       new_log_file=""
     fi
 
-    wait_for_creation_readiness "${codecoapp_replicas}" "${jobIterations}" || true
+    wait_for_creation_readiness "${experiment}" "${run}" "${new_log_file}" "${codecoapp_replicas}" "${jobIterations}" "${creation_started_at}" || true
     echo "post-creation-delay sleeping ${POST_CREATION_DELAY_SECONDS}s before capture/deletion..."
     sleep "${POST_CREATION_DELAY_SECONDS}"
     capture_creation_status "${experiment}" "${run}" "${new_log_file}" "${codecoapp_replicas}" "${jobIterations}"
