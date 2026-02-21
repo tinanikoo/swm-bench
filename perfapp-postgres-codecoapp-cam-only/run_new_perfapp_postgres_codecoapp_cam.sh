@@ -42,7 +42,7 @@ SUMMARY_FILE="${SCRIPT_DIR}/kube-burner-perfapp-postgres-codecoapp-cam-only-podl
 echo "# podLatency summary (selected kube-burner output)" >> "${SUMMARY_FILE}"
 #tina
 experiments=(
-  "jobIterations=1 qps=1 burst=1 codecoapp_replicas=1"
+#  "jobIterations=1 qps=1 burst=1 codecoapp_replicas=1"
   "jobIterations=1 qps=1 burst=1 codecoapp_replicas=5"
   "jobIterations=1 qps=100 burst=100 codecoapp_replicas=5"
   "jobIterations=1 qps=500 burst=500 codecoapp_replicas=5"
