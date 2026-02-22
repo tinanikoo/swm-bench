@@ -42,7 +42,7 @@ SUMMARY_FILE="${SCRIPT_DIR}/kube-burner-perfapp-postgres-codecoapp-cam-only-podl
 echo "# podLatency summary (selected kube-burner output)" >> "${SUMMARY_FILE}"
 #tina
 experiments=(
-#  "jobIterations=1 qps=1 burst=1 codecoapp_replicas=1"
+
   "jobIterations=1 qps=1 burst=1 codecoapp_replicas=5"
   "jobIterations=1 qps=100 burst=100 codecoapp_replicas=5"
   "jobIterations=1 qps=500 burst=500 codecoapp_replicas=5"
@@ -538,6 +538,7 @@ for (( run=1; run<=iterations; run++ )); do
   echo "============================================================"
 
   for experiment in "${experiments[@]}"; do
+    echo "============================================================"
     echo "Running experiment: ${experiment}"
 
     kubectl delete namespace "${BASE_NS}" --ignore-not-found=true >/dev/null 2>&1 || true
