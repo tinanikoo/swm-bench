@@ -11,16 +11,16 @@ TEMPLATE_FILE="kubelet-density-heavy.template-codecoapp-only.yml"
 MAX_WAIT_TIMEOUT="${MAX_WAIT_TIMEOUT:-5m}"
 KUBEBURNER_TIMEOUT="${KUBEBURNER_TIMEOUT:-4m}"
 INTER_EXPERIMENT_SLEEP="${INTER_EXPERIMENT_SLEEP:-5}"
-WAIT_CREATE_TIMEOUT="${WAIT_CREATE_TIMEOUT:-240}"
+WAIT_CREATE_TIMEOUT="${WAIT_CREATE_TIMEOUT:-360}"
 WAIT_POLL_SECONDS="${WAIT_POLL_SECONDS:-30}"
 WAIT_COUNTER_MODE="${WAIT_COUNTER_MODE:-ready}" # observed | ready
 POST_CREATION_DELAY_SECONDS="${POST_CREATION_DELAY_SECONDS:-20}"
 DELETE_WAIT_TIMEOUT="${DELETE_WAIT_TIMEOUT:-120}"
 DELETE_POLL_SECONDS="${DELETE_POLL_SECONDS:-1}"
 DELETE_WAIT_INCLUDE_SERVICES="${DELETE_WAIT_INCLUDE_SERVICES:-true}" # true | false
-WAIT_SERVICE_TIMEOUT="${WAIT_SERVICE_TIMEOUT:-24}"
-SERVICE_POLL_SECONDS="${SERVICE_POLL_SECONDS:-10}"
-WAIT_LOG_INTERVAL_SECONDS="${WAIT_LOG_INTERVAL_SECONDS:-15}"
+WAIT_SERVICE_TIMEOUT="${WAIT_SERVICE_TIMEOUT:-360}"
+SERVICE_POLL_SECONDS="${SERVICE_POLL_SECONDS:-20}"
+WAIT_LOG_INTERVAL_SECONDS="${WAIT_LOG_INTERVAL_SECONDS:-45}"
 VERBOSE_KUBEBURNER_OUTPUT="${VERBOSE_KUBEBURNER_OUTPUT:-false}" # true | false
 iterations="${iterations:-1}"
 SCHEDULER_MODE="${1:-qos}" # qos | def
@@ -46,17 +46,16 @@ experiments=(
   "jobIterations=1 qps=1 burst=1 codecoapp_replicas=5"
   "jobIterations=1 qps=100 burst=100 codecoapp_replicas=5"
   "jobIterations=1 qps=500 burst=500 codecoapp_replicas=5"
-  "jobIterations=1 qps=1000 burst=1000 codecoapp_replicas=5"
 
   "jobIterations=1 qps=1 burst=1 codecoapp_replicas=10"
   "jobIterations=1 qps=100 burst=100 codecoapp_replicas=10"
   "jobIterations=1 qps=500 burst=500 codecoapp_replicas=10"
-  "jobIterations=1 qps=1000 burst=1000 codecoapp_replicas=10"
 
-  "jobIterations=1 qps=1 burst=1 codecoapp_replicas=20"
-  "jobIterations=1 qps=100 burst=100 codecoapp_replicas=20"
-  "jobIterations=1 qps=500 burst=500 codecoapp_replicas=20"
-  "jobIterations=1 qps=1000 burst=1000 codecoapp_replicas=20"
+  
+  "jobIterations=1 qps=1 burst=1 codecoapp_replicas=10"
+  "jobIterations=1 qps=100 burst=100 codecoapp_replicas=10"
+  "jobIterations=1 qps=500 burst=500 codecoapp_replicas=10"
+
 )
 
 calc_stats_from_file_ms() {
