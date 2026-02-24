@@ -15,11 +15,11 @@ Run a single script that captures **all relevant state and logs** into one file.
 
 Purpose:
 Check whether application pods are Running, Pending, or CrashLooping.
-```bash
+```
 kubectl get pods -n kdh -o wide
 ``
 Show only problematic pods:
-```bash
+```
 kubectl get pods -n kdh | grep -Ev 'Running|Completed'
 ``
 ## Scheduler Placement Verification
@@ -28,17 +28,17 @@ Purpose:
 Verify which scheduler placed each pod (default vs QoS / CODECO).
 
 All namespaces:
-```bash
+```
 kubectl get pods -A \
   -o custom-columns='NAMESPACE:metadata.namespace,NAME:metadata.name,SCHEDULER:spec.schedulerName'
 ``
 Only kdh:
-```bash
+```
 kubectl get pods -n kdh \
   -o custom-columns='NAME:metadata.name,NODE:spec.nodeName,SCHEDULER:spec.schedulerName'
 ``
 Watch live placement:
-```bash
+```
 watch kubectl get pods -n kdh -o wide
 ``
 
@@ -48,7 +48,7 @@ Purpose:
 Inspect how CODECO models the application and its constraints.
 
 ### CodecoApp
-```bash
+```
 kubectl get codecoapp -n kdh -o wide
 kubectl describe codecoapp dummy-1 -n kdh
 QoS Scheduler Application CR
@@ -58,7 +58,7 @@ kubectl get applications.qos-scheduler.siemens.com -n kdh dummy-3 -o yaml
 
 Purpose:
 Understand intended placement vs actual pod placement.
-```bash
+```
 kubectl get assignmentplan -n kdh acm-applicationgroup-assignment-plan -o yaml
 kubectl describe assignmentplan -n kdh acm-applicationgroup-assignment-plan
 ``
