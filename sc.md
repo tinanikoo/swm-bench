@@ -118,7 +118,7 @@ Capacity / Allocatable
 ```
 kubectl describe node ip-10-0-132-49 | sed -n '/^Capacity:/,/^Allocatable:/p'
 kubectl describe node ip-10-0-132-49 | sed -n '/^Allocatable:/,/^System Info:/p'
-``
+```
 ## Multus Diagnostics (Networking Layer)
 
 Purpose:
