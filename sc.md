@@ -63,17 +63,17 @@ kubectl get assignmentplan -n kdh acm-applicationgroup-assignment-plan -o yaml
 kubectl describe assignmentplan -n kdh acm-applicationgroup-assignment-plan
 ```
 Optional (other namespaces):
-``
+```
 kubectl -n codeco-test get assignmentplan acm-applicationgroup-assignment-plan
-kubectl -n kubelet-density-heavy get assignmentplan acm-applicationgroup-assignment-plan
-``
+kubectl -n kdh get assignmentplan acm-applicationgroup-assignment-plan
+```
 ## ApplicationGroup (Scheduler Input)
 
 Purpose:
 Inspect grouping, membership, and constraints used by the scheduler.
 ```
-kubectl get applicationgroup -n kubelet-density-heavy acm-applicationgroup -o wide
-kubectl describe applicationgroup -n kubelet-density-heavy acm-applicationgroup
+kubectl get applicationgroup -n kdh acm-applicationgroup -o wide
+kubectl describe applicationgroup -n kdh acm-applicationgroup
 ```
 ## Events (Timeline of Failures)
 
@@ -150,6 +150,6 @@ kubectl get netma-topology netma-sample -n he-codeco-netma -o yaml
 
 Purpose:
 Validate application/service relationships before deployment.
-``
+```
 grep -nE "appName:|otherService:" templates/perfapp-postgres-cam.yml
-``
+```
