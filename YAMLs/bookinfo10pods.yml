@@ -1,0 +1,185 @@
+apiVersion: codeco.he-codeco.eu/v1alpha1
+kind: CodecoApp
+metadata:
+  name: bookinfo
+  namespace: {{ .namespace }}
+spec:
+  appEnergyLimit: "50"
+  performanceProfile: Greenness
+  appName: bookinfo-swmapp
+
+  codecoapp-msspec:
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: productpage
+            image: docker.io/istio/examples-bookinfo-productpage-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: productpage
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: reviews-v1
+            port: 9080
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: details
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: details
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: details
+            image: docker.io/istio/examples-bookinfo-details-v1:1.20.3
+            ports:
+              - containerPort: 9080
+      serviceName: details
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: ratings
+            image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: ratings
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v1
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v1
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviewstorate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v2
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v2
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews2torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v3
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v3
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews3torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v4
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v4
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews4torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v5
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v5
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews5torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v6
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v6
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews6torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v7
+            image: docker.io/istio/examples-bookinfo-reviews-v1:1.20.3
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v7
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews7torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp
+            serviceName: ratings
+            port: 9080
+                    
+  complianceClass: High
+  qosClass: BestEffort
+  securityClass: Good
