@@ -15,7 +15,7 @@ MAX_WAIT_TIMEOUT="${MAX_WAIT_TIMEOUT:-5m}"
 WAIT_CREATE_TIMEOUT="${WAIT_CREATE_TIMEOUT:-300}"
 WAIT_POLL_SECONDS="${WAIT_POLL_SECONDS:-2}"
 
-TEMPLATE_FILE="kubelet-density-heavy.bookinfo.template.yml"
+TEMPLATE_FILE="kubelet-density-heavy.bookinfo-deployments.template-cam.yml"
 SUMMARY_FILE="kube-burner-bookinfo-podlatency-summary.log"
 DELETE_LOG="deletion_times.log"
 CREATION_LOG="creation_readiness.log"
