@@ -1,0 +1,617 @@
+apiVersion: codeco.he-codeco.eu/v1alpha1
+kind: CodecoApp
+metadata:
+  name: bookinfo-{{.caseNo}}-{{ .schedulerName }}
+  namespace: {{ .namespace }}
+spec:
+  appEnergyLimit: "50"
+  performanceProfile: Greenness
+  appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+
+  codecoapp-msspec:
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: productpage
+            image: docker.io/istio/examples-bookinfo-productpage-v1:1.20.3
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: productpage
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: reviews-v1
+            port: 9080
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: details
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: details
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: details
+            image: docker.io/kaikanghuang/details:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+      serviceName: details
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: ratings
+            image: docker.io/istio/examples-bookinfo-ratings-v1:1.20.3
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: ratings
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v1
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v1
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviewstorate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v2
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v2
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews2torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v3
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v3
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews3torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v4
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v4
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews3torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v5
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v5
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews5torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v6
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v6
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews6torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v7
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v7
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews7torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v8
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v8
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews8torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v9
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v9
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews9torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v10
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v10
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews10torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v11
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v11
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews11torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v12
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v12
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews12torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+                      
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v13
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v13
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews13torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080                      
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v14
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v14
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews14torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v15
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v15
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews15torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+                      
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v16
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v16
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews16torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v17
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v17
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews17torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v18
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v18
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews18torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+                      
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v19
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v19
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews19torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v20
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v20
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews20torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v21
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v21
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews21torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v22
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v22
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews22torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v23
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v13
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews23torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080                      
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v24
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v24
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews24torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v25
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v25
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews25torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+                      
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v26
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v26
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews26torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+    - podspec:
+        schedulerName: {{ .schedulerName }}
+        containers:
+          - name: reviews-v27
+            image: docker.io/kaikanghuang/reviews:latest
+            imagePullPolicy: IfNotPresent
+            ports:
+              - containerPort: 9080
+                protocol: TCP
+      serviceName: reviews-v27
+      serviceChannels:
+        - advancedChannelSettings:
+            maxDelay: "10s"
+          channelName: reviews27torate
+          serviceClass: BESTEFFORT
+          otherService:
+            appName: bookinfo-swmapp-{{.caseNo}}-{{ .schedulerName }}
+            serviceName: ratings
+            port: 9080
+
+
+
+
+                                                                                                           
+  complianceClass: High
+  qosClass: BestEffort
+  securityClass: Good
+
+
