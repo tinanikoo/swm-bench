@@ -403,9 +403,7 @@ persistent networking failures
 Command:
 
 ```bash
-kubectl rollout restart ds \
--n kube-system \
-kube-multus-ds
+k rollout restart ds kube-multus-ds -n kube-system
 ```
 
 Note:
